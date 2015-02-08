@@ -1,0 +1,28 @@
+<div data-ng-controller="TicTacToeController as ctrl">
+    <table>
+        <tbody>
+       <tr>
+           <td class="button" data-ng-click="ctrl.onUserClickingCell(0,0)" data-ng-bind="ctrl.getStringForCell(0,0)"></td>
+           <td class="button" data-ng-click="ctrl.onUserClickingCell(0,1)"  data-ng-bind="ctrl.getStringForCell(0,1)"></td>
+           <td class="button" data-ng-click="ctrl.onUserClickingCell(0,2)"  data-ng-bind="ctrl.getStringForCell(0,2)"></td>
+
+       </tr>
+        <tr>
+            <td class="button" data-ng-click="ctrl.onUserClickingCell(1,0)" data-ng-bind="ctrl.getStringForCell(1,0)"></td>
+            <td class="button" data-ng-click="ctrl.onUserClickingCell(1,1)"  data-ng-bind="ctrl.getStringForCell(1,1)"></td>
+            <td class="button" data-ng-click="ctrl.onUserClickingCell(1,2)"  data-ng-bind="ctrl.getStringForCell(1,2)"></td>
+        </tr>
+        <tr>
+            <td class="button" data-ng-click="ctrl.onUserClickingCell(2,0)" data-ng-bind="ctrl.getStringForCell(2,0)"></td>
+            <td class="button" data-ng-click="ctrl.onUserClickingCell(2,1)"  data-ng-bind="ctrl.getStringForCell(2,1)"></td>
+            <td class="button" data-ng-click="ctrl.onUserClickingCell(2,2)"  data-ng-bind="ctrl.getStringForCell(2,2)"></td>
+        </tr>
+
+        </tbody>
+
+    </table>
+    <div data-ng-show="ctrl.turn === ctrl.humanPlayerMark && !ctrl.game.gameCompleted"> Human player's turn</div>
+    <div data-ng-show="ctrl.game.winner"> Player {{ctrl.game.winner}} won!</div>
+    <div data-ng-show="!ctrl.game.winner && ctrl.game.gameCompleted">Game has ended in a draw</div>
+    <button data-ng-click="ctrl.onClickingNewGame()">New game</button>
+</div>
