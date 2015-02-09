@@ -10,10 +10,9 @@ a {
 td { appearance:button;
     -moz-appearance:button;
     -webkit-appearance:button;
-}
+    text-align: center;
+    padding: 50px 0 50px 0;
+    width: 100px;
+    border:1px solid gray;
 
-tr,td,th
- {
-     border:1px solid gray;
-     padding:50px;
- }
+}

@@ -12,19 +12,18 @@ function TicTacToeController($scope) {
 
     this.newGame(true);
 
-    this.$scope.$on(TicTacToeController.Events.REQUEST_MOVE_TO_CPU,  angular.bind(this,function(event, data){
-        var move  = this.cpuPlayer.getMove(this.game.getGameBoard());
+    this.$scope.$on(TicTacToeController.Events.REQUEST_MOVE_TO_CPU, angular.bind(this, function (event, data) {
+        var move = this.cpuPlayer.getMove(this.game.getGameBoard());
         this.$scope.$emit(TicTacToeController.Events.CPU_MOVE_PROVIDED, move.action);
     }));
-    this.$scope.$on(TicTacToeController.Events.CPU_MOVE_PROVIDED,  angular.bind(this,function(event, moveAction){
-        this.game.makeMove(moveAction.rowNumber,moveAction.columnNumber);
+    this.$scope.$on(TicTacToeController.Events.CPU_MOVE_PROVIDED, angular.bind(this, function (event, moveAction) {
+        this.game.makeMove(moveAction.rowNumber, moveAction.columnNumber);
     }));
-
 
 
 }
 
-TicTacToeController.prototype.newGame = function(onInit){
+TicTacToeController.prototype.newGame = function (onInit) {
     this.game = null;
     this.game = new ticTacToe.TicTacToeGame();
     this.xPlayerAgent = Math.random() > .5 ? TicTacToeController.CPU : TicTacToeController.HUMAN;
@@ -35,7 +34,7 @@ TicTacToeController.prototype.newGame = function(onInit){
 
     this.cpuPlayer = new ticTacToe.TicTacToeComputerPlayer(this.cpuPlayerMark);
     this.humanPlayer = new ticTacToe.TicTacToeHumanPlayer(this.humanPlayerMark);
-    if(!onInit && this.game.currentPlayerMark == this.cpuPlayerMark){
+    if (!onInit && this.game.currentPlayerMark == this.cpuPlayerMark) {
         this.$scope.$emit(TicTacToeController.Events.REQUEST_MOVE_TO_CPU);
 
     }
@@ -57,10 +56,9 @@ TicTacToeController.prototype.getStringForCell = function (rowNumber, columnNumb
     return this.boardArray[rowNumber][columnNumber] ? this.boardArray[rowNumber][columnNumber] : '_';
 };
 
-TicTacToeController.prototype.onClickingNewGame = function(){
+TicTacToeController.prototype.onClickingNewGame = function () {
     this.newGame();
 };
-
 
 
 TicTacToeController.HUMAN = 'h';
