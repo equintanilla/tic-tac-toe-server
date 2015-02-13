@@ -13,11 +13,11 @@ function TicTacToeController($scope) {
     this.newGame(true);
 
     this.$scope.$on(TicTacToeController.Events.REQUEST_MOVE_TO_CPU, angular.bind(this, function (event, data) {
-        var move = this.cpuPlayer.getMove(this.game.getGameBoard());
-        this.$scope.$emit(TicTacToeController.Events.CPU_MOVE_PROVIDED, move.action);
+        var action = this.cpuPlayer.getMove(this.game.getGameBoard());
+        this.$scope.$emit(TicTacToeController.Events.CPU_MOVE_PROVIDED, action);
     }));
-    this.$scope.$on(TicTacToeController.Events.CPU_MOVE_PROVIDED, angular.bind(this, function (event, moveAction) {
-        this.game.makeMove(moveAction.rowNumber, moveAction.columnNumber);
+    this.$scope.$on(TicTacToeController.Events.CPU_MOVE_PROVIDED, angular.bind(this, function (event, action) {
+        this.game.makeMove(action.rowNumber, action.columnNumber);
     }));
 
 
@@ -49,7 +49,10 @@ TicTacToeController.Events = {
 
 TicTacToeController.prototype.onUserClickingCell = function (rowNumber, columnNumber) {
     if (this.turn === this.humanPlayerMark && !this.boardArray[rowNumber][columnNumber]) {
-        this.game.makeMove(rowNumber, columnNumber)
+        this.humanPlayer.setRowNumber(rowNumber);
+        this.humanPlayer.setColumnNumber(columnNumber);
+        var action = this.humanPlayer.getMove(this.game.getGameBoard());
+        this.game.makeMove(action.rowNumber, action.columnNumber);
     }
 };
 TicTacToeController.prototype.getStringForCell = function (rowNumber, columnNumber) {

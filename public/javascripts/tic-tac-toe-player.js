@@ -18,11 +18,65 @@ ticTacToe.TicTacToePlayer.prototype.getMove = function (gameState) {
 
 /**
  *
+ * @param {number} rowNumber
+ * @param {number} columnNumber
+ * @constructor
+ */
+ticTacToe.TicTacToeAction = function (rowNumber, columnNumber) {
+    this.rowNumber = rowNumber;
+    this.columnNumber = columnNumber;
+};
+
+/**
+ *
  * @param mark
  * @constructor
  */
 ticTacToe.TicTacToeHumanPlayer = function (mark) {
     this.__proto__.mark = mark;
+    this.rowNumber = null;
+    this.columnNumber = null;
+};
+
+/**
+ *
+ * @returns {number}
+ */
+ticTacToe.TicTacToeHumanPlayer.prototype.getRowNumber = function () {
+    return this.rowNumber;
+};
+
+/**
+ *
+ * @returns {number}
+ */
+ticTacToe.TicTacToeHumanPlayer.prototype.getColumnNumber = function () {
+    return this.columnNumber;
+};
+
+/***
+ *
+ * @param {number} rowNumber
+ */
+ticTacToe.TicTacToeHumanPlayer.prototype.setRowNumber = function (rowNumber) {
+    this.rowNumber = rowNumber;
+};
+
+/**
+ *
+ * @param {number} columnNumber
+ */
+ticTacToe.TicTacToeHumanPlayer.prototype.setColumnNumber = function (columnNumber) {
+    this.columnNumber = columnNumber;
+};
+
+/**
+ *
+ * @param gameState
+ * @returns {ticTacToe.TicTacToeAction}
+ */
+ticTacToe.TicTacToeHumanPlayer.prototype.getMove = function (gameState) {
+    return new ticTacToe.TicTacToeAction(this.getRowNumber(), this.getColumnNumber());
 };
 
 /**
@@ -34,16 +88,32 @@ ticTacToe.TicTacToeComputerPlayer = function (mark) {
     this.__proto__.mark = mark;
 };
 
-
+/**
+ *
+ * @param {ticTacToe.TicTacToeBoard} gameState
+ * @returns {ticTacToe.TicTacToeAction}
+ */
 ticTacToe.TicTacToeComputerPlayer.prototype.getMove = function (gameState) {
-    return this.miniMax(gameState, true, Number.NEGATIVE_INFINITY, Number.POSITIVE_INFINITY);
+    var move = this.miniMax(gameState, true, Number.NEGATIVE_INFINITY, Number.POSITIVE_INFINITY);
+    return move ? move.action : null;
 };
 
+/**
+ *
+ * @returns {ticTacToe.TicTacToeBoard.O|ticTacToe.TicTacToeBoard.X}
+ */
 ticTacToe.TicTacToeComputerPlayer.prototype.getOpponentMark = function () {
     return this.mark == ticTacToe.TicTacToeBoard.O ? ticTacToe.TicTacToeBoard.X : ticTacToe.TicTacToeBoard.O;
 };
 
 
+/**
+ *
+ * @param {ticTacToe.TicTacToeBoard} gameState
+ * @param {ticTacToe.TicTacToeAction} action
+ * @param {number} heuristicScore
+ * @constructor
+ */
 ticTacToe.TicTacToeComputerPlayer.Move = function (gameState, action, heuristicScore) {
     this.gameState = gameState;
     this.action = action;
@@ -55,12 +125,12 @@ ticTacToe.TicTacToeComputerPlayer.Move.prototype.toString = function () {
 };
 
 /**
- *
- * @param gameState
- * @param maximizingPlayer
- * @param alpha
- * @param beta
- * @returns {*}
+ * Minimax algorithm with alpha beta pruning
+ * @param {ticTacToe.TicTacToeBoard} gameState
+ * @param {boolean} maximizingPlayer
+ * @param {number} alpha
+ * @param {number} beta
+ * @returns {ticTacToe.TicTacToeComputerPlayer.Move}
  */
 ticTacToe.TicTacToeComputerPlayer.prototype.miniMax = function (gameState, maximizingPlayer, alpha, beta) {
     var val = this.maxStep(gameState, alpha, beta, true);
@@ -69,6 +139,14 @@ ticTacToe.TicTacToeComputerPlayer.prototype.miniMax = function (gameState, maxim
 
 };
 
+/**
+ * max step of minimax
+ * @param {ticTacToe.TicTacToeBoard} gameState
+ * @param {number} alpha
+ * @param {number} beta
+ * @param {boolean} topLevel
+ * @returns {ticTacToe.TicTacToeComputerPlayer.Move| number}
+ */
 ticTacToe.TicTacToeComputerPlayer.prototype.maxStep = function (gameState, alpha, beta, topLevel) {
     if (this.isTerminalState(gameState)) {
         var heuristicValue = this.heuristic(gameState);
@@ -96,6 +174,14 @@ ticTacToe.TicTacToeComputerPlayer.prototype.maxStep = function (gameState, alpha
     return topLevel ? bestValueMove : bestValue;
 };
 
+/**
+ * min step of miniMax
+ * @param {ticTacToe.TicTacToeBoard} gameState
+ * @param {number} alpha
+ * @param {number} beta
+ * @param {boolean} topLevel
+ * @returns {ticTacToe.TicTacToeComputerPlayer.Move| number}
+ */
 ticTacToe.TicTacToeComputerPlayer.prototype.minStep = function (gameState, alpha, beta, topLevel) {
 
     if (this.isTerminalState(gameState)) {
@@ -131,6 +217,7 @@ ticTacToe.TicTacToeComputerPlayer.prototype.minStep = function (gameState, alpha
 };
 
 /**
+ * returns the new states by executing each possible action
  * @param {ticTacToe.TicTacToeBoard} gameState
  * @param {ticTacToe.TicTacToeBoard.X | ticTacToe.TicTacToeBoard.O} mark
  * @param {boolean} returnMoves
@@ -145,10 +232,8 @@ ticTacToe.TicTacToeComputerPlayer.prototype.nextStates = function (gameState, ma
             if (!boardArray[i][j]) {
                 var boardCopy = gameState.getBoardCopy();
                 boardCopy.setCell(i, j, mark);
-                nextStates.push(returnMoves ? new ticTacToe.TicTacToeComputerPlayer.Move(boardCopy, {
-                    rowNumber: i,
-                    columnNumber: j
-                }, null) : boardCopy);
+                nextStates.push(returnMoves ? new ticTacToe.TicTacToeComputerPlayer.Move(boardCopy,
+                    new ticTacToe.TicTacToeAction(i, j), null) : boardCopy);
             }
         }
 
@@ -167,7 +252,7 @@ ticTacToe.TicTacToeComputerPlayer.prototype.isTerminalState = function (gameStat
 
 
 /**
- *
+ * looks at a game state and determines how good it looks
  * @param {ticTacToe.TicTacToeBoard} gameState
  * @returns {number}
  */
